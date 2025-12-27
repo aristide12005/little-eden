@@ -3,11 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout";
 import { LevelCard } from "@/components/cards";
 import { ChevronDown } from "lucide-react";
-import heroImage from "@/assets/hero-school.jpg";
-import nurseryImage from "@/assets/nursery.jpg";
-import primaryImage from "@/assets/primary.jpg";
-import classroomImage from "@/assets/classroom.jpg";
-import directorImage from "@/assets/director.jpg";
+import heroImage from "@/assets/hero-school.jpeg";
+import nurseryImage from "@/assets/gallery/img-1.jpeg";
+import primaryImage from "@/assets/gallery/img-2.jpeg";
+import classroomImage from "@/assets/gallery/img-3.jpeg";
+import directorImage from "@/assets/gallery/img-4.jpeg";
 
 const Index = () => {
   const scrollToContent = () => {

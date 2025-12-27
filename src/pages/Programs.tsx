@@ -4,14 +4,14 @@ import { Layout } from "@/components/layout";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { ProgramCard } from "@/components/cards";
 import { Clock, Calendar, Users } from "lucide-react";
-import nurseryImage from "@/assets/nursery.jpg";
-import primaryImage from "@/assets/primary.jpg";
+import nurseryImage from "@/assets/gallery/img-1.jpeg";
+import primaryImage from "@/assets/gallery/img-2.jpeg";
 
 const Programs = () => {
   return (
     <Layout>
-      <PageHeader 
-        title="Our Programs" 
+      <PageHeader
+        title="Our Programs"
         subtitle="Quality education tailored to every stage of your child's development."
       />
 
@@ -22,9 +22,9 @@ const Programs = () => {
             {/* Nursery Program */}
             <div className="bg-card rounded-2xl overflow-hidden shadow-warm border border-border/50">
               <div className="relative h-64 overflow-hidden">
-                <img 
-                  src={nurseryImage} 
-                  alt="Nursery children doing arts and crafts" 
+                <img
+                  src={nurseryImage}
+                  alt="Nursery children doing arts and crafts"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 to-transparent" />
@@ -71,9 +71,9 @@ const Programs = () => {
             {/* Primary Program */}
             <div className="bg-card rounded-2xl overflow-hidden shadow-warm border border-border/50">
               <div className="relative h-64 overflow-hidden">
-                <img 
-                  src={primaryImage} 
-                  alt="Primary students reading in the library" 
+                <img
+                  src={primaryImage}
+                  alt="Primary students reading in the library"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 to-transparent" />
@@ -146,7 +146,7 @@ const Programs = () => {
               { emoji: "🧮", title: "Math Club" },
               { emoji: "🎤", title: "Public Speaking" },
             ].map((activity, index) => (
-              <div 
+              <div
                 key={activity.title}
                 className="bg-card p-5 rounded-xl text-center shadow-soft hover:shadow-warm transition-all duration-300 hover:-translate-y-1 border border-border/50"
               >

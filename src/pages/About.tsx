@@ -53,33 +53,35 @@ const About = () => {
               </Button>
             </div>
             <div className="order-1 lg:order-2">
-              <div className="relative h-[400px] md:h-[500px] rounded-2xl overflow-hidden shadow-warm w-full group">
-                {slides.map((slide, index) => (
-                  <div
-                    key={index}
-                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? "opacity-100" : "opacity-0"
-                      }`}
-                  >
-                    <img
-                      src={slide}
-                      alt={`Little Eden School Slide ${index + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-[6000ms] ease-out scale-105 group-hover:scale-110"
-                      style={{
-                        transform: index === currentSlide ? "scale(1.1)" : "scale(1.0)"
-                      }}
-                    />
-                  </div>
-                ))}
+              <div className="relative">
+                <div className="h-[400px] md:h-[500px] rounded-2xl overflow-hidden shadow-warm w-full group relative">
+                  {slides.map((slide, index) => (
+                    <div
+                      key={index}
+                      className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? "opacity-100" : "opacity-0"
+                        }`}
+                    >
+                      <img
+                        src={slide}
+                        alt={`Little Eden School Slide ${index + 1}`}
+                        className="w-full h-full object-cover transition-transform duration-[6000ms] ease-out scale-105 group-hover:scale-110"
+                        style={{
+                          transform: index === currentSlide ? "scale(1.1)" : "scale(1.0)"
+                        }}
+                      />
+                    </div>
+                  ))}
 
-                {/* Overlay Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+                  {/* Overlay Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+                </div>
 
-                <div className="absolute -bottom-6 -left-6 bg-sunshine text-accent-foreground px-6 py-4 rounded-xl shadow-lg z-10 hidden md:block">
+                <div className="absolute -bottom-6 -left-6 bg-sunshine text-accent-foreground px-6 py-4 rounded-xl shadow-lg z-20 hidden md:block">
                   <div className="text-3xl font-bold">10+</div>
                   <div className="text-sm">Years of Excellence</div>
                 </div>
                 {/* Mobile Badge Position */}
-                <div className="absolute bottom-4 left-4 bg-sunshine text-accent-foreground px-4 py-3 rounded-xl shadow-lg z-10 md:hidden">
+                <div className="absolute bottom-4 left-4 bg-sunshine text-accent-foreground px-4 py-3 rounded-xl shadow-lg z-20 md:hidden">
                   <div className="text-2xl font-bold">10+</div>
                   <div className="text-xs">Years of Excellence</div>
                 </div>

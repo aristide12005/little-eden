@@ -4,8 +4,8 @@ import { Layout } from "@/components/layout";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { ProgramCard } from "@/components/cards";
 import { Clock, Calendar, Users } from "lucide-react";
-import nurseryImage from "@/assets/gallery/img-1.jpeg";
-import primaryImage from "@/assets/gallery/img-2.jpeg";
+import nurseryImage from "@/assets/nursery1.jpeg";
+import primaryImage from "@/assets/primary.jpeg";
 
 const Programs = () => {
   return (

@@ -4,8 +4,8 @@ import { Layout } from "@/components/layout";
 import { LevelCard } from "@/components/cards";
 import { ChevronDown } from "lucide-react";
 import heroBgImage from "@/assets/hero-bg.png";
-import nurseryImage from "@/assets/gallery/img-1.jpeg";
-import primaryImage from "@/assets/gallery/img-2.jpeg";
+import nurseryImage from "@/assets/nursery1.jpeg";
+import primaryImage from "@/assets/primary.jpeg";
 import classroomImage from "@/assets/gallery/img-3.jpeg";
 import directorImage from "@/assets/gallery/img-4.jpeg";
 

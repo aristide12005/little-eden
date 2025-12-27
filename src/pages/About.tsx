@@ -3,13 +3,29 @@ import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { Target, Eye, Heart, Star, CheckCircle } from "lucide-react";
-import classroomImage from "@/assets/classroom.jpg";
+import { useState, useEffect } from "react";
+import slide1 from "@/assets/about/slide-1.png";
+import slide2 from "@/assets/about/slide-2.png";
+import slide3 from "@/assets/about/slide-3.png";
+import slide4 from "@/assets/about/slide-4.png";
+
+const slides = [slide1, slide2, slide3, slide4];
 
 const About = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 4000); // Change slide every 4 seconds
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <Layout>
-      <PageHeader 
-        title="About Us" 
+      <PageHeader
+        title="About Us"
         subtitle="Discover the heart of Little Eden School and our commitment to nurturing young minds."
       />
 
@@ -37,15 +53,35 @@ const About = () => {
               </Button>
             </div>
             <div className="order-1 lg:order-2">
-              <div className="relative">
-                <img 
-                  src={classroomImage} 
-                  alt="Students learning in a bright classroom at Little Eden School" 
-                  className="rounded-2xl shadow-warm w-full"
-                />
-                <div className="absolute -bottom-6 -left-6 bg-sunshine text-accent-foreground px-6 py-4 rounded-xl shadow-lg">
+              <div className="relative h-[400px] md:h-[500px] rounded-2xl overflow-hidden shadow-warm w-full group">
+                {slides.map((slide, index) => (
+                  <div
+                    key={index}
+                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? "opacity-100" : "opacity-0"
+                      }`}
+                  >
+                    <img
+                      src={slide}
+                      alt={`Little Eden School Slide ${index + 1}`}
+                      className="w-full h-full object-cover transition-transform duration-[6000ms] ease-out scale-105 group-hover:scale-110"
+                      style={{
+                        transform: index === currentSlide ? "scale(1.1)" : "scale(1.0)"
+                      }}
+                    />
+                  </div>
+                ))}
+
+                {/* Overlay Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+
+                <div className="absolute -bottom-6 -left-6 bg-sunshine text-accent-foreground px-6 py-4 rounded-xl shadow-lg z-10 hidden md:block">
                   <div className="text-3xl font-bold">10+</div>
                   <div className="text-sm">Years of Excellence</div>
+                </div>
+                {/* Mobile Badge Position */}
+                <div className="absolute bottom-4 left-4 bg-sunshine text-accent-foreground px-4 py-3 rounded-xl shadow-lg z-10 md:hidden">
+                  <div className="text-2xl font-bold">10+</div>
+                  <div className="text-xs">Years of Excellence</div>
                 </div>
               </div>
             </div>
@@ -104,7 +140,7 @@ const About = () => {
               { icon: CheckCircle, title: "Integrity", description: "Honesty and strong moral principles" },
               { icon: Target, title: "Responsibility", description: "Taking ownership of our actions" },
             ].map((value, index) => (
-              <div 
+              <div
                 key={value.title}
                 className="text-center p-6 rounded-2xl bg-card shadow-soft hover:shadow-warm transition-all duration-300 hover:-translate-y-1 border border-border/50"
                 style={{ animationDelay: `${index * 100}ms` }}

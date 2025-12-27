@@ -23,7 +23,7 @@ const Index = () => {
           <img
             alt="Little Eden School campus"
             className="w-full h-full object-cover"
-            src="/lovable-uploads/4c303a04-732f-4b17-a63d-ffe8f8034f9f.jpg"
+            src="/src/assets/hero-bg.png"
           />
           <div className="absolute inset-0 bg-foreground/40" />
         </div>

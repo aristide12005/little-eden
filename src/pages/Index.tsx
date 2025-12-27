@@ -108,7 +108,7 @@ const Index = () => {
               style={{ animationDelay: "0.15s" }}
             >
               <img
-                src={heroImage}
+                src={heroBgImage}
                 alt="Campus view"
                 className="rounded-2xl shadow-card w-full h-48 object-cover"
               />

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout";
 import { LevelCard } from "@/components/cards";
 import { ChevronDown } from "lucide-react";
-import heroImage from "@/assets/hero-school.jpeg";
+import heroBgImage from "@/assets/hero-bg.png";
 import nurseryImage from "@/assets/gallery/img-1.jpeg";
 import primaryImage from "@/assets/gallery/img-2.jpeg";
 import classroomImage from "@/assets/gallery/img-3.jpeg";
@@ -23,7 +23,7 @@ const Index = () => {
           <img
             alt="Little Eden School campus"
             className="w-full h-full object-cover"
-            src="/src/assets/hero-bg.png"
+            src={heroBgImage}
           />
           <div className="absolute inset-0 bg-foreground/40" />
         </div>

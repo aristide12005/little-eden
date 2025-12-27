@@ -1,7 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Layout } from "@/components/layout";
 import { PageHeader } from "@/components/sections/PageHeader";
-import { X, Play, Image as ImageIcon, Monitor } from "lucide-react";
+import { X, Play, Image as ImageIcon, Monitor, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Dynamically import local assets
@@ -46,16 +46,44 @@ type FilterType = 'all' | 'video' | 'photo' | 'ict';
 
 const Gallery = () => {
   const [filter, setFilter] = useState<FilterType>('all');
-  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
   const filteredItems = useMemo(() => {
     if (filter === 'all') return allItems;
     return allItems.filter(item => item.type === filter);
   }, [filter]);
 
+  const selectedItem = selectedIndex >= 0 && selectedIndex < filteredItems.length ? filteredItems[selectedIndex] : null;
+
+  const handleNext = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setSelectedIndex((prev) => (prev + 1) % filteredItems.length);
+  };
+
+  const handlePrev = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setSelectedIndex((prev) => (prev - 1 + filteredItems.length) % filteredItems.length);
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selectedItem) return;
+      if (e.key === 'ArrowRight') handleNext();
+      if (e.key === 'ArrowLeft') handlePrev();
+      if (e.key === 'Escape') setSelectedIndex(-1);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedItem]);
+
   const FilterButton = ({ type, label, icon: Icon }: { type: FilterType, label: string, icon?: any }) => (
     <button
-      onClick={() => setFilter(type)}
+      onClick={() => {
+        setFilter(type);
+        setSelectedIndex(-1);
+      }}
       className={cn(
         "px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2",
         filter === type
@@ -92,7 +120,7 @@ const Gallery = () => {
               <div
                 key={item.id}
                 className="group relative overflow-hidden rounded-xl bg-muted aspect-[4/3] cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1"
-                onClick={() => setSelectedItem(item)}
+                onClick={() => setSelectedIndex(index)}
                 style={{ animationDelay: `${index % 12 * 50}ms` }}
               >
                 {/* Media Content */}
@@ -114,16 +142,6 @@ const Gallery = () => {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                 )}
-
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                    <span className="text-xs font-bold text-sunshine uppercase tracking-wider mb-1 block">
-                      {item.type === 'ict' ? 'ICT Lab' : item.type === 'video' ? 'Video' : 'Photo'}
-                    </span>
-                    <h3 className="text-white font-medium line-clamp-1">{item.title}</h3>
-                  </div>
-                </div>
 
                 {/* Center Icon */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -151,22 +169,40 @@ const Gallery = () => {
       {selectedItem && (
         <div
           className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-4 animate-fade-in backdrop-blur-sm"
-          onClick={() => setSelectedItem(null)}
+          onClick={() => setSelectedIndex(-1)}
         >
+          {/* Close Button */}
           <button
-            className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors z-10 p-2 hover:bg-white/10 rounded-full"
-            onClick={() => setSelectedItem(null)}
+            className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors z-20 p-2 hover:bg-white/10 rounded-full"
+            onClick={() => setSelectedIndex(-1)}
           >
             <X className="w-8 h-8" />
           </button>
 
+          {/* Nav Buttons */}
+          <button
+            className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors z-20 p-3 hover:bg-white/10 rounded-full"
+            onClick={handlePrev}
+          >
+            <ChevronLeft className="w-8 h-8 md:w-10 md:h-10" />
+          </button>
+
+          <button
+            className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors z-20 p-3 hover:bg-white/10 rounded-full"
+            onClick={handleNext}
+          >
+            <ChevronRight className="w-8 h-8 md:w-10 md:h-10" />
+          </button>
+
+          {/* Content */}
           <div
-            className="w-full max-w-6xl max-h-[90vh] flex items-center justify-center"
+            className="w-full max-w-6xl max-h-[90vh] flex items-center justify-center relative"
             onClick={(e) => e.stopPropagation()}
           >
             {selectedItem.type === 'video' ? (
               <div className="w-full aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
                 <video
+                  key={selectedItem.src} // Key forces re-render/reset on change
                   src={selectedItem.src}
                   controls
                   autoPlay
@@ -175,17 +211,12 @@ const Gallery = () => {
               </div>
             ) : (
               <img
+                key={selectedItem.src}
                 src={selectedItem.src}
                 alt={selectedItem.title}
                 className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
               />
             )}
-          </div>
-
-          <div className="absolute bottom-6 left-0 right-0 text-center pointer-events-none">
-            <h3 className="text-white text-xl font-medium drop-shadow-md inline-block bg-black/50 px-4 py-2 rounded-full">
-              {selectedItem.title}
-            </h3>
           </div>
         </div>
       )}

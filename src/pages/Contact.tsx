@@ -20,10 +20,10 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     toast.success("Message sent successfully! We'll get back to you soon.");
     setFormData({ name: "", email: "", subject: "", message: "" });
     setIsSubmitting(false);
@@ -35,8 +35,8 @@ const Contact = () => {
 
   return (
     <Layout>
-      <PageHeader 
-        title="Contact Us" 
+      <PageHeader
+        title="Contact Us"
         subtitle="We'd love to hear from you. Reach out with any questions about enrollment or our programs."
       />
 
@@ -176,15 +176,17 @@ const Contact = () => {
       <section className="pb-16">
         <div className="container">
           <div className="max-w-6xl mx-auto">
-            <div className="bg-eden-green-light rounded-2xl p-12 text-center">
-              <MapPin className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-foreground mb-2">Visit Our Campus</h3>
-              <p className="text-muted-foreground mb-4">
-                We're located in beautiful Nyakiriba, Western Province, Rwanda.
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Contact us to schedule a campus tour and see our facilities in person.
-              </p>
+            <div className="bg-muted rounded-2xl overflow-hidden shadow-soft h-[500px]">
+              <iframe
+                src="https://maps.google.com/maps?q=Nyakiriba,%20Western%20Province,%20Rwanda&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Little Eden School Location"
+              />
             </div>
           </div>
         </div>

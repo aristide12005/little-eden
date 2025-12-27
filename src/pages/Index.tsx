@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout";
-import { LevelCard } from "@/components/cards";
 import { ChevronDown } from "lucide-react";
 import heroBgImage from "@/assets/hero-bg.png";
 import nurseryImage from "@/assets/nursery1.jpeg";
@@ -60,27 +59,61 @@ const Index = () => {
       </section>
 
       {/* School Levels Section */}
-      <section id="school-levels" className="section-padding bg-secondary">
-        <div className="container">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Our School Levels
-            </h2>
-          </div>
+      {/* School Levels Section */}
+      <section id="school-levels" className="py-16 bg-muted/30">
+        <div className="container px-4">
+          <div className="flex flex-col md:flex-row gap-6 max-w-5xl mx-auto items-stretch justify-center">
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <LevelCard
-              image={nurseryImage}
-              title="Nursery School"
-              link="/programs"
-              delay={0}
-            />
-            <LevelCard
-              image={primaryImage}
-              title="Primary School"
-              link="/programs"
-              delay={100}
-            />
+            {/* Nursery Card */}
+            <Link
+              to="/programs"
+              className="group relative flex-1 overflow-hidden rounded-2xl h-64 md:h-80 shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1"
+            >
+              <img
+                src={nurseryImage}
+                alt="Nursery School"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
+
+              <div className="absolute inset-0 p-8 flex flex-col justify-end">
+                <span className="text-sunshine font-bold tracking-wider text-sm mb-2 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                  BEGINNINGS
+                </span>
+                <h3 className="text-3xl font-bold text-white mb-2 group-hover:text-sunshine transition-colors">
+                  Nursery School
+                </h3>
+                <p className="text-white/80 text-sm max-w-xs transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-75">
+                  A nurturing environment for your child's first steps in education.
+                </p>
+              </div>
+            </Link>
+
+            {/* Primary Card */}
+            <Link
+              to="/programs"
+              className="group relative flex-1 overflow-hidden rounded-2xl h-64 md:h-80 shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1"
+            >
+              <img
+                src={primaryImage}
+                alt="Primary School"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
+
+              <div className="absolute inset-0 p-8 flex flex-col justify-end">
+                <span className="text-sunshine font-bold tracking-wider text-sm mb-2 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                  GROWTH
+                </span>
+                <h3 className="text-3xl font-bold text-white mb-2 group-hover:text-sunshine transition-colors">
+                  Primary School
+                </h3>
+                <p className="text-white/80 text-sm max-w-xs transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-75">
+                  Fostering academic excellence and character development.
+                </p>
+              </div>
+            </Link>
+
           </div>
         </div>
       </section>

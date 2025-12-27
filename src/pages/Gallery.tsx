@@ -1,148 +1,194 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Layout } from "@/components/layout";
 import { PageHeader } from "@/components/sections/PageHeader";
-import { X, Play, Image as ImageIcon } from "lucide-react";
+import { X, Play, Image as ImageIcon, Monitor } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // Dynamically import local assets
 const videoModules = import.meta.glob('@/assets/gallery/vid-*.mp4', { eager: true, as: 'url' });
 const imageModules = import.meta.glob('@/assets/gallery/img-*.jpeg', { eager: true, as: 'url' });
+const ictModules = import.meta.glob('@/assets/gallery/ict-*.jpeg', { eager: true, as: 'url' });
 
-// Convert to arrays
-const localVideos = Object.keys(videoModules).map((path, index) => ({
+// Asset Interface
+interface GalleryItem {
+  id: string;
+  type: 'video' | 'photo' | 'ict';
+  title: string;
+  src: string;
+  thumbnail?: string;
+}
+
+// Process Assets
+const videos: GalleryItem[] = Object.keys(videoModules).map((path, index) => ({
   id: `vid-${index}`,
-  title: `Video ${index + 1}`, // Simplified title since we don't have metadata
-  src: videoModules[path],
-  thumbnail: null // Local videos usually need a distinct thumbnail or we use the video itself
+  type: 'video',
+  title: `School Video ${index + 1}`,
+  src: videoModules[path]
 }));
 
-const localImages = Object.keys(imageModules).map((path, index) => ({
+const photos: GalleryItem[] = Object.keys(imageModules).map((path, index) => ({
   id: `img-${index}`,
-  title: `Photo ${index + 1}`,
+  type: 'photo',
+  title: `School Photo ${index + 1}`,
   src: imageModules[path]
 }));
 
+const ictPhotos: GalleryItem[] = Object.keys(ictModules).map((path, index) => ({
+  id: `ict-${index}`,
+  type: 'ict',
+  title: `ICT Lab Session ${index + 1}`,
+  src: ictModules[path]
+}));
+
+const allItems = [...videos, ...photos, ...ictPhotos];
+
+type FilterType = 'all' | 'video' | 'photo' | 'ict';
+
 const Gallery = () => {
-  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [filter, setFilter] = useState<FilterType>('all');
+  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
+
+  const filteredItems = useMemo(() => {
+    if (filter === 'all') return allItems;
+    return allItems.filter(item => item.type === filter);
+  }, [filter]);
+
+  const FilterButton = ({ type, label, icon: Icon }: { type: FilterType, label: string, icon?: any }) => (
+    <button
+      onClick={() => setFilter(type)}
+      className={cn(
+        "px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2",
+        filter === type
+          ? "bg-primary text-primary-foreground shadow-md scale-105"
+          : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+      )}
+    >
+      {Icon && <Icon className="w-4 h-4" />}
+      {label}
+    </button>
+  );
 
   return (
     <Layout>
       <PageHeader
         title="Our Gallery"
-        subtitle="Capturing moments of joy and learning"
+        subtitle="Explore life at Little Eden School"
       />
 
-      {/* Video Gallery */}
-      <section className="section-padding bg-background">
-        <div className="container">
-          <h2 className="text-3xl font-bold mb-8 text-center">Videos</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {localVideos.map((video, index) => (
+      <section className="section-padding min-h-screen bg-background relative overflow-hidden">
+        <div className="container relative z-10">
+
+          {/* Filters */}
+          <div className="flex flex-wrap justify-center gap-3 mb-12 animate-fade-up">
+            <FilterButton type="all" label="All Moments" />
+            <FilterButton type="video" label="Videos" icon={Play} />
+            <FilterButton type="photo" label="Photos" icon={ImageIcon} />
+            <FilterButton type="ict" label="ICT Lab" icon={Monitor} />
+          </div>
+
+          {/* Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredItems.map((item, index) => (
               <div
-                key={video.id}
-                className="relative aspect-video overflow-hidden rounded-xl cursor-pointer group animate-fade-up bg-muted shadow-md border border-border/50"
-                style={{ animationDelay: `${index * 50}ms` }}
-                onClick={() => setSelectedVideo(video.src)}
+                key={item.id}
+                className="group relative overflow-hidden rounded-xl bg-muted aspect-[4/3] cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1"
+                onClick={() => setSelectedItem(item)}
+                style={{ animationDelay: `${index % 12 * 50}ms` }}
               >
-                <video
-                  src={video.src}
-                  className="w-full h-full object-cover"
-                  muted
-                />
-                <div className="absolute inset-0 bg-black/30 flex items-center justify-center transition-opacity group-hover:bg-black/40">
-                  <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center transition-transform group-hover:scale-110">
-                    <Play className="w-8 h-8 text-white ml-1" fill="currentColor" />
+                {/* Media Content */}
+                {item.type === 'video' ? (
+                  <video
+                    src={item.src}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    muted
+                    loop
+                    playsInline
+                    onMouseOver={e => e.currentTarget.play()}
+                    onMouseOut={e => e.currentTarget.pause()}
+                  />
+                ) : (
+                  <img
+                    src={item.src}
+                    alt={item.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                )}
+
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                    <span className="text-xs font-bold text-sunshine uppercase tracking-wider mb-1 block">
+                      {item.type === 'ict' ? 'ICT Lab' : item.type === 'video' ? 'Video' : 'Photo'}
+                    </span>
+                    <h3 className="text-white font-medium line-clamp-1">{item.title}</h3>
                   </div>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent">
-                  <h3 className="text-white text-sm font-medium truncat">{video.title}</h3>
+
+                {/* Center Icon */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center">
+                    {item.type === 'video' ? (
+                      <Play className="w-6 h-6 text-white fill-current" />
+                    ) : (
+                      <ImageIcon className="w-6 h-6 text-white" />
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
+
+          {filteredItems.length === 0 && (
+            <div className="text-center py-20 text-muted-foreground">
+              <p>No items found in this category.</p>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Photo Gallery */}
-      <section className="section-padding bg-secondary/30">
-        <div className="container">
-          <h2 className="text-3xl font-bold mb-8 text-center">Photos</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {localImages.map((image, index) => (
-              <div
-                key={image.id}
-                className="relative aspect-square overflow-hidden rounded-xl cursor-pointer group animate-fade-up bg-muted shadow-sm hover:shadow-md transition-all"
-                style={{ animationDelay: `${index * 50}ms` }}
-                onClick={() => setSelectedImage(image.src)}
-              >
-                <img
-                  src={image.src}
-                  alt={image.title}
-                  loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+      {/* Lightbox */}
+      {selectedItem && (
+        <div
+          className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-4 animate-fade-in backdrop-blur-sm"
+          onClick={() => setSelectedItem(null)}
+        >
+          <button
+            className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors z-10 p-2 hover:bg-white/10 rounded-full"
+            onClick={() => setSelectedItem(null)}
+          >
+            <X className="w-8 h-8" />
+          </button>
+
+          <div
+            className="w-full max-w-6xl max-h-[90vh] flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {selectedItem.type === 'video' ? (
+              <div className="w-full aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
+                <video
+                  src={selectedItem.src}
+                  controls
+                  autoPlay
+                  className="w-full h-full"
                 />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                  <ImageIcon className="text-white w-8 h-8" />
-                </div>
               </div>
-            ))}
+            ) : (
+              <img
+                src={selectedItem.src}
+                alt={selectedItem.title}
+                className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+              />
+            )}
           </div>
-        </div>
-      </section>
 
-      {/* Video Lightbox */}
-      {selectedVideo && (
-        <div
-          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 animate-fade-in"
-          onClick={() => setSelectedVideo(null)}
-        >
-          <button
-            className="absolute top-6 right-6 text-white hover:text-white/80 transition-colors z-10"
-            onClick={() => setSelectedVideo(null)}
-            aria-label="Close"
-          >
-            <X className="w-8 h-8" />
-          </button>
-          <div
-            className="w-full max-w-5xl aspect-video bg-black rounded-lg overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <video
-              src={selectedVideo}
-              controls
-              autoPlay
-              className="w-full h-full"
-            />
+          <div className="absolute bottom-6 left-0 right-0 text-center pointer-events-none">
+            <h3 className="text-white text-xl font-medium drop-shadow-md inline-block bg-black/50 px-4 py-2 rounded-full">
+              {selectedItem.title}
+            </h3>
           </div>
         </div>
       )}
-
-      {/* Image Lightbox */}
-      {selectedImage && (
-        <div
-          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 animate-fade-in"
-          onClick={() => setSelectedImage(null)}
-        >
-          <button
-            className="absolute top-6 right-6 text-white hover:text-white/80 transition-colors z-10"
-            onClick={() => setSelectedImage(null)}
-            aria-label="Close"
-          >
-            <X className="w-8 h-8" />
-          </button>
-          <div
-            className="max-w-5xl max-h-[90vh] overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <img
-              src={selectedImage}
-              alt="Gallery Preview"
-              className="max-w-full max-h-full object-contain rounded-md"
-            />
-          </div>
-        </div>
-      )}
-
     </Layout>
   );
 };
